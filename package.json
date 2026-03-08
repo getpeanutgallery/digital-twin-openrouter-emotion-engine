@@ -7,10 +7,16 @@
   "scripts": {
     "test": "node --test test/*.test.js"
   },
-  "keywords": ["digital-twin", "openrouter", "emotion-engine", "cassette", "pack"],
+  "keywords": [
+    "digital-twin",
+    "openrouter",
+    "emotion-engine",
+    "cassette",
+    "pack"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "digital-twin-core": "file:../digital-twin-core"
+    "digital-twin-core": "git+ssh://git@github.com/getpeanutgallery/digital-twin-core.git#main"
   }
 }
