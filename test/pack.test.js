@@ -18,12 +18,13 @@ describe('digital-twin-openrouter-emotion-engine twin pack', () => {
     assert.ok(manifest.name, 'manifest should have name');
     assert.ok(Array.isArray(manifest.cassettes), 'manifest should have cassettes array');
     assert.ok(manifest.cassettes.length > 0, 'should have at least one cassette');
+    assert.ok(manifest.defaultCassetteId, 'manifest should have defaultCassetteId');
   });
 
   test('store can list cassettes', async () => {
     const cassetteIds = await store.list();
     assert.ok(Array.isArray(cassetteIds), 'list() should return an array');
-    assert.ok(cassetteIds.length >= 2, `Expected at least 2 cassettes, got ${cassetteIds.length}`);
+    assert.strictEqual(cassetteIds.length, 1, `Expected exactly 1 cassette, got ${cassetteIds.length}`);
   });
 
   test('store can read each cassette', async () => {

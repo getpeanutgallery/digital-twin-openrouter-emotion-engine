@@ -4,9 +4,9 @@
   "version": "1.0.0",
   "description": "Twin pack for OpenRouter emotion engine digital twin recordings. Provides pre-recorded cassettes for testing and replay.",
   "routerCompatibility": ">=1.0.0",
+  "defaultCassetteId": "openrouter-emotion-engine",
   "cassettes": [
-    "cassettes/get-emotion-config.json",
-    "cassettes/post-emotion-analysis.json"
+    "cassettes/openrouter-emotion-engine.json"
   ],
   "index": "index.js",
   "created": "2025-03-08T00:00:00.000Z",
