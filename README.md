@@ -39,8 +39,6 @@ The `manifest.json` describes the pack and specifies the default cassette:
 
 ### Index Export
 
-The `index.js` exports a `TwinStore`:
-
 ```javascript
 const store = require('digital-twin-openrouter-emotion-engine');
 // store.list() returns cassette IDs
@@ -49,14 +47,11 @@ const store = require('digital-twin-openrouter-emotion-engine');
 
 ## Usage with digital-twin-router
 
-The router will automatically read `manifest.json` to determine the default cassette. You can override with `DIGITAL_TWIN_CASSETTE` environment variable.
+The router will automatically read `manifest.json` to determine the default cassette. You can override with `DIGITAL_TWIN_CASSETTE`.
 
 ```bash
-# Set the twinPack path to this package
 export DIGITAL_TWIN_PACK="/path/to/digital-twin-openrouter-emotion-engine"
-# Optional: override cassette
-export DIGITAL_TWIN_CASSETTE="openrouter-emotion-engine"
-# Set mode
+export DIGITAL_TWIN_CASSETTE="openrouter-emotion-engine"   # optional
 export DIGITAL_TWIN_MODE="replay"
 ```
 
@@ -74,67 +69,15 @@ const transport = createTwinTransport({
 
 ## Recording New Cassettes
 
-To modify or add cassettes:
-
-1. **Record using TwinEngine**:
-
-```javascript
-const { TwinEngine, TwinStore } = require('digital-twin-core');
-
-// Point store at the cassettes directory
-const store = new TwinStore({
-  storeDir: './cassettes',
-  createIfMissing: true
-});
-
-const engine = new TwinEngine({ store });
-
-// Create or load the default cassette
-await engine.create('openrouter-emotion-engine', {
-  description: 'OpenRouter emotion engine interactions',
-  tags: ['openrouter', 'emotion']
-});
-
-// Record interactions
-await engine.record(request, response);
-
-// The cassette is saved as openrouter-emotion-engine.json
-```
-
-2. **Sanitize sensitive data** before committing:
-
-```javascript
-const { redactCassette } = require('digital-twin-core');
-const cassette = await store.read('openrouter-emotion-engine');
-const safeCassette = redactCassette(cassette);
-await store.write('openrouter-emotion-engine', safeCassette, true);
-```
-
-3. **Update manifest.json** if adding a new default cassette (change `defaultCassetteId` and `cassettes` array).
-
-4. **Commit**:
-
-```bash
-git add cassettes/openrouter-emotion-engine.json manifest.json
-git commit -m "Update cassette: openrouter-emotion-engine"
-```
+1) Record interactions with `digital-twin-core` (`TwinEngine` + `TwinStore`).
+2) Sanitize secrets/PII before committing (use redaction helpers).
+3) Update `manifest.json` if you add/change the default cassette.
 
 ## Testing
-
-Run the test suite:
 
 ```bash
 npm test
 ```
-
-This validates the cassette structure and interactions.
-
-## Notes
-
-- The default cassette contains multiple interactions in a single file.
-- The router resolves the `twinPack`, detects `manifest.json`, and uses `defaultCassetteId`.
-- You can override the cassette per-run with `DIGITAL_TWIN_CASSETTE`.
-- The router also supports packs with a `cassettes/` subdirectory; in that case `storeDir` is automatically set to the `cassettes` folder.
 
 ## License
 
