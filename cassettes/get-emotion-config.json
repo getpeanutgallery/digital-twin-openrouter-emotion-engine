@@ -1,0 +1,60 @@
+{
+  "version": "1.0",
+  "meta": {
+    "name": "Get Emotion Engine Configuration",
+    "description": "Retrieves the current configuration for the emotion analysis engine. Used to check available emotion models and settings.",
+    "created": "2025-03-08T00:00:00.000Z",
+    "updated": "2025-03-08T00:00:00.000Z",
+    "tags": ["openrouter", "emotion", "config", "get"],
+    "metadata": {
+      "source": "recorded-example",
+      "env": "test"
+    }
+  },
+  "interactions": [
+    {
+      "id": "get-emotion-config-001",
+      "interactionId": "sha256$a1b2c3d4e5f60718293a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5",
+      "request": {
+        "method": "GET",
+        "url": "https://openrouter.ai/api/v1/emotion/config",
+        "protocol": "https:",
+        "headers": {
+          "Accept": "application/json",
+          "Authorization": "Bearer sk-or-v1-redacted",
+          "Content-Type": "application/json",
+          "User-Agent": "digital-twin-test/1.0"
+        },
+        "body": null
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
+          "X-Ratelimit-Limit": "100"
+        },
+        "body": {
+          "models": [
+            "openrouter/emotion-analyzer-v1",
+            "openrouter/emotion-analyzer-v2"
+          ],
+          "default_model": "openrouter/emotion-analyzer-v2",
+          "supported_emotions": [
+            "joy",
+            "sadness",
+            "anger",
+            "fear",
+            "surprise",
+            "disgust",
+            "neutral"
+          ],
+          "max_text_length": 5000,
+          "version": "2.1.0"
+        }
+      },
+      "timestamp": "2025-03-08T00:00:00.000Z",
+      "durationMs": 145
+    }
+  ]
+}

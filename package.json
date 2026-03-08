@@ -1,0 +1,16 @@
+{
+  "name": "digital-twin-openrouter-emotion-engine",
+  "version": "1.0.0",
+  "description": "Twin pack for OpenRouter emotion engine digital twin recordings",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "keywords": ["digital-twin", "openrouter", "emotion-engine", "cassette", "pack"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "digital-twin-core": "file:../digital-twin-core"
+  }
+}
