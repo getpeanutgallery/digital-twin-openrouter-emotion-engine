@@ -2,6 +2,7 @@ const { test, describe } = require('node:test');
 const assert = require('node:assert');
 const path = require('path');
 const fs = require('fs');
+const { execFileSync } = require('node:child_process');
 const fsp = fs.promises;
 
 // Import the twin pack store
@@ -19,6 +20,15 @@ describe('digital-twin-openrouter-emotion-engine twin pack', () => {
     assert.ok(Array.isArray(manifest.cassettes), 'manifest should have cassettes array');
     assert.ok(manifest.cassettes.length > 0, 'should have at least one cassette');
     assert.ok(manifest.defaultCassetteId, 'manifest should have defaultCassetteId');
+    assert.ok(
+      manifest.cassettes.includes(`cassettes/${manifest.defaultCassetteId}.json`),
+      'defaultCassetteId should point at a listed cassette file'
+    );
+
+    for (const cassettePath of manifest.cassettes) {
+      const absoluteCassettePath = path.join(__dirname, '..', cassettePath);
+      assert.ok(fs.existsSync(absoluteCassettePath), `manifest cassette missing on disk: ${cassettePath}`);
+    }
   });
 
   test('store can list cassettes', async () => {
@@ -77,10 +87,9 @@ describe('digital-twin-openrouter-emotion-engine twin pack', () => {
         assert.ok(request.url, `Request should have url in ${id}`);
         assert.ok(request.headers, `Request should have headers in ${id}`);
 
-        // Response checks
-        assert.ok(typeof response.status === 'number', `Response should have numeric status in ${id}`);
-        assert.ok(response.status >= 100 && response.status < 600, `Status should be valid HTTP code in ${id}`);
-        assert.ok(response.headers, `Response should have headers in ${id}`);
+        // Response checks (OpenRouter cassette content is model-output oriented, not raw HTTP transport)
+        assert.ok(typeof response.content === 'string' && response.content.length > 0, `Response should have content in ${id}`);
+        assert.ok(response.usage && typeof response.usage.total === 'number', `Response should have usage totals in ${id}`);
       }
     }
   });
@@ -113,10 +122,24 @@ describe('digital-twin-openrouter-emotion-engine twin pack', () => {
 
       for (const interaction of cassette.interactions) {
         assert.ok(
-          interaction.interactionId.startsWith('sha256$'),
-          `interactionId should be a SHA256 hash in cassette ${id}`
+          /^[a-f0-9]{64}$/i.test(interaction.interactionId),
+          `interactionId should be a 64-char hex hash in cassette ${id}`
         );
       }
     }
+  });
+
+  test('npm pack --dry-run only ships pack artifacts', () => {
+    const output = execFileSync('npm', ['pack', '--dry-run', '--json'], {
+      cwd: path.join(__dirname, '..'),
+      encoding: 'utf8'
+    });
+
+    const packResult = JSON.parse(output)[0];
+    const packedPaths = packResult.files.map((file) => file.path);
+
+    assert.ok(packedPaths.includes('cassettes/cod-test-golden-20260309-082851.json'), 'tarball should include cassette');
+    assert.ok(!packedPaths.some((file) => file.startsWith('.beads/')), 'tarball should not include .beads metadata');
+    assert.ok(!packedPaths.includes('AGENTS.md'), 'tarball should not include workspace orchestration docs');
   });
 });
