@@ -1,17 +1,24 @@
 # digital-twin-openrouter-emotion-engine
 
-Twin pack for OpenRouter emotion engine digital twin recordings. This package provides a pre-recorded cassette that can be used with `digital-twin-router` for testing, replay, and verification of emotion analysis API interactions.
+Twin pack for OpenRouter emotion-engine recordings. This repo owns the OpenRouter replay cassette used for bounded offline verification of OpenRouter transport behavior.
+
+## Current canonical pack state
+
+- Default cassette id: `cod-test-golden-20260309-082851`
+- Cassette path: `cassettes/cod-test-golden-20260309-082851.json`
+- Manifest entrypoint: `manifest.json`
+- Runtime entrypoint: `index.js`
 
 ## Structure
 
 ```
 .
 ├── cassettes/
-│   └── openrouter-emotion-engine.json  # Default cassette (single file with multiple interactions)
-├── manifest.json                       # Pack descriptor with defaultCassetteId
-├── index.js                            # Exports a TwinStore instance
-├── README.md                           # This file
-└── package.json                        # Node package metadata
+│   └── cod-test-golden-20260309-082851.json  # Default cassette declared by manifest.json
+├── manifest.json                              # Pack descriptor with defaultCassetteId
+├── index.js                                   # Exports a TwinStore instance
+├── README.md                                  # This file
+└── package.json                               # Node package metadata
 ```
 
 ## How It Works
@@ -20,17 +27,17 @@ The `index.js` exports a `TwinStore` instance configured to read cassettes from 
 
 ### Twin Pack Manifest
 
-The `manifest.json` describes the pack and specifies the default cassette:
+The `manifest.json` is the source of truth for the default cassette:
 
 ```json
 {
   "packType": "twin-pack",
   "name": "digital-twin-openrouter-emotion-engine",
   "version": "1.0.0",
-  "description": "...",
+  "description": "Twin pack for OpenRouter emotion engine digital twin recordings. Provides pre-recorded cassettes for testing and replay.",
   "routerCompatibility": ">=1.0.0",
-  "defaultCassetteId": "openrouter-emotion-engine",
-  "cassettes": ["openrouter-emotion-engine.json"],
+  "defaultCassetteId": "cod-test-golden-20260309-082851",
+  "cassettes": ["cassettes/cod-test-golden-20260309-082851.json"],
   "index": "index.js",
   "created": "2025-03-08T00:00:00.000Z",
   "tags": ["openrouter", "emotion", "ai", "testing"]
@@ -42,7 +49,7 @@ The `manifest.json` describes the pack and specifies the default cassette:
 ```javascript
 const store = require('digital-twin-openrouter-emotion-engine');
 // store.list() returns cassette IDs
-// store.read('openrouter-emotion-engine') loads the cassette
+// store.read('cod-test-golden-20260309-082851') loads the default cassette
 ```
 
 ## Usage with digital-twin-router
@@ -51,7 +58,7 @@ The router will automatically read `manifest.json` to determine the default cass
 
 ```bash
 export DIGITAL_TWIN_PACK="/path/to/digital-twin-openrouter-emotion-engine"
-export DIGITAL_TWIN_CASSETTE="openrouter-emotion-engine"   # optional
+export DIGITAL_TWIN_CASSETTE="cod-test-golden-20260309-082851"   # optional; otherwise manifest default is used
 export DIGITAL_TWIN_MODE="replay"
 ```
 
@@ -67,11 +74,12 @@ const transport = createTwinTransport({
 });
 ```
 
-## Recording New Cassettes
+## Recording / refreshing cassettes
 
 1) Record interactions with `digital-twin-core` (`TwinEngine` + `TwinStore`).
 2) Sanitize secrets/PII before committing (use redaction helpers).
-3) Update `manifest.json` if you add/change the default cassette.
+3) If you add or rotate the canonical replay cassette, update `manifest.json`, this README, and the pack tests together so the documented default cassette stays aligned with the shipped pack.
+4) Keep package publishing bounded to the actual pack artifacts (`cassettes/`, `manifest.json`, `index.js`, docs/license) rather than workspace metadata.
 
 ## Testing
 

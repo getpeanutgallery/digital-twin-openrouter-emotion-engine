@@ -7,6 +7,13 @@
   "scripts": {
     "test": "node --test test/*.test.js"
   },
+  "files": [
+    "cassettes/",
+    "index.js",
+    "manifest.json",
+    "README.md",
+    "LICENSE"
+  ],
   "keywords": [
     "digital-twin",
     "openrouter",
