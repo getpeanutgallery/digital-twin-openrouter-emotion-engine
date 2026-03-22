@@ -25,6 +25,22 @@ describe('digital-twin-openrouter-emotion-engine twin pack', () => {
       'defaultCassetteId should point at a listed cassette file'
     );
 
+    const cassetteDir = path.join(__dirname, '..', 'cassettes');
+    const onDiskCassettePaths = (await fsp.readdir(cassetteDir))
+      .filter((file) => file.endsWith('.json'))
+      .map((file) => `cassettes/${file}`)
+      .sort();
+
+    assert.deepStrictEqual(
+      [...manifest.cassettes].sort(),
+      onDiskCassettePaths,
+      'every cassette on disk should be declared in manifest.json'
+    );
+    assert.ok(
+      !onDiskCassettePaths.some((cassettePath) => /-record-.*\.json$/i.test(cassettePath)),
+      'record/debug cassettes should not ship in this pack'
+    );
+
     for (const cassettePath of manifest.cassettes) {
       const absoluteCassettePath = path.join(__dirname, '..', cassettePath);
       assert.ok(fs.existsSync(absoluteCassettePath), `manifest cassette missing on disk: ${cassettePath}`);

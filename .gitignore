@@ -1,8 +1,4 @@
 node_modules/
-package-lock.json
-*.log
-.DS_Store
-
-# Dolt database files (added by bd init)
-.dolt/
-*.db
+*.tgz
+*-record-*.json
+cassettes/*-record-*.json

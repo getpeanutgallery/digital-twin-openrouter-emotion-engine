@@ -78,8 +78,10 @@ const transport = createTwinTransport({
 
 1) Record interactions with `digital-twin-core` (`TwinEngine` + `TwinStore`).
 2) Sanitize secrets/PII before committing (use redaction helpers).
-3) If you add or rotate the canonical replay cassette, update `manifest.json`, this README, and the pack tests together so the documented default cassette stays aligned with the shipped pack.
-4) Keep package publishing bounded to the actual pack artifacts (`cassettes/`, `manifest.json`, `index.js`, docs/license) rather than workspace metadata.
+3) Only keep canonical replay cassettes in this repo. Ad-hoc `*-record-*` debug captures should stay local and are ignored by git.
+4) Run `npm run check:cassettes` before committing, or enable the included hook with `git config core.hooksPath .githooks`.
+5) If you add or rotate the canonical replay cassette, update `manifest.json`, this README, and the pack tests together so the documented default cassette stays aligned with the shipped pack.
+6) Keep package publishing bounded to the actual pack artifacts (`cassettes/`, `manifest.json`, `index.js`, docs/license) rather than workspace metadata.
 
 ## Testing
 

@@ -5,7 +5,8 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "check:cassettes": "node scripts/check-cassettes-safe.cjs"
   },
   "files": [
     "cassettes/",
